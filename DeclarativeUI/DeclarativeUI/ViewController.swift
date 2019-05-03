@@ -9,6 +9,8 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    let navigationManager = NavigationManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +22,7 @@ class ViewController: UIViewController {
         let navigationManager = NavigationManager()
         navigationManager.fetch { initialScreen in
             let vc = TableScreenViewController(screen: initialScreen)
+            vc.navigationManager = navigationManager
             navigationController?.viewControllers = [vc]
         }
     }

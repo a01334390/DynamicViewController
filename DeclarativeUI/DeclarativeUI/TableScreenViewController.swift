@@ -7,9 +7,11 @@
 //
 
 import UIKit
+import SafariServices
 
 class TableScreenViewController: UITableViewController {
     var screen : Screen
+    var navigationManager : NavigationManager?
     
     init(screen: Screen) {
         self.screen = screen
@@ -34,6 +36,25 @@ class TableScreenViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let row = screen.rows[indexPath.row]
         cell.textLabel?.text = row.title
+        
+        if let action = row.action {
+            cell.selectionStyle = .default
+            if action.presentNewScreen {
+                cell.accessoryType = .disclosureIndicator
+            } else {
+                cell.accessoryType = .none
+            }
+        } else {
+            cell.selectionStyle = .none
+        }
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let row = screen.rows[indexPath.row]
+        navigationManager?.execute(row.action, from: self)
+        if row.action?.presentNewScreen == false {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
     }
 }

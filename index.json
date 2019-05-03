@@ -6,13 +6,68 @@
 			"type":"table",
 			"rows":[
 				{
-					"title": "First row"
+					"title": "First row",
+					"actionType" : "alert",
+					"action":{
+						"title":"This is the first row",
+						"message":"Oh yeah"
+					}
 				},
 				{
-                                        "title": "Second row"
+                                        "title": "Website test",
+					"actionType": "showWebsite",
+					"action": {
+						"url":"http://www.github.com/a01334390"	
+					}
                                 },
 				{
                                         "title": "Third row"
+                                },
+				{
+                                        "title": "Fourth row",
+					"actionType":"showScreen",
+					"action" : {
+						"id":"second"
+					}
+                                },
+				{
+                                        "title": "Share stuff",
+					"actionType":"share",
+					"action" : {
+						"text":"Hello!"
+					}
+                                },
+				{
+                                        "title": "Play Movie",
+					"actionType":"playMovie",
+					"action" : {
+						"url":"https://www.youtube.com/watch?v=qgzC4wYn_3g"
+					}
+                                }	
+			]
+		},
+		{
+			"id":"second",
+			"title":"Second Screen",
+			"type":"table",
+			"rows":[
+				{
+					"title": "SFirst row",
+					"actionType" : "alert",
+					"action":{
+						"title":"This is the first row",
+						"message":"Oh yeah"
+					}
+				},
+				{
+                                        "title": "SWebsite test",
+					"actionType": "showWebsite",
+					"action": {
+						"url":"http://www.github.com/a01334390"	
+					}
+                                },
+				{
+                                        "title": "SThird row"
                                 }	
 			]
 		}
