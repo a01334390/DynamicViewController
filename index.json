@@ -72,8 +72,21 @@
 					}
                                 },
 				{
-                                        "title": "SThird row"
-                                }	
+                                        "title": "SThird row",
+					"actionType": "quickLook",
+					"action": {
+						"url":"https://developer.apple.com/arkit/gallery/models/wateringcan/wateringcan.usdz",
+						"name" : "Watering Can"
+					}
+                                },
+				{
+					"title":"Word file",
+					"actionType": "quickLook",
+					"action":{
+						"url":"http://0.0.0.0:6969/word.docx",
+						"name":"Word file"
+					}	
+				}	
 			]
 		}
 	]

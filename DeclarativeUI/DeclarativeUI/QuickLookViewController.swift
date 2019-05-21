@@ -29,7 +29,9 @@ class QuickLookViewController: UIViewController, QLPreviewControllerDataSource, 
         super.viewDidLoad()
         quickLookController.dataSource = self
         quickLookController.delegate = self
-        navigationItem.title = self.name
+//        navigationItem.title = self.name
+        navigationController?.popViewController(animated: false)
+        navigationController?.pushViewController(quickLookController, animated: false)
     }
     
     func numberOfPreviewItems(in controller: QLPreviewController) -> Int {

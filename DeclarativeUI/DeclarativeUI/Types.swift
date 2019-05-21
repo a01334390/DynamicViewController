@@ -11,6 +11,7 @@ import SafariServices
 import AVKit
 import Alamofire
 import SVProgressHUD
+import QuickLook
 
 struct Application : Decodable {
     let screens: [Screen]
