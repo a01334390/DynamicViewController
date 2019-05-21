@@ -9,6 +9,8 @@
 import Foundation
 import SafariServices
 import AVKit
+import Alamofire
+import SVProgressHUD
 
 struct Application : Decodable {
     let screens: [Screen]
@@ -46,6 +48,8 @@ struct Row : Decodable {
                     action = try container.decode(ShareAction.self, forKey: .action)
                 case "playMovie":
                     action = try container.decode(PlayMovieAction.self, forKey: .action)
+                case "quickLook":
+                    action = try container.decode(QuickLookAction.self, forKey: .action)
                 default:
                     fatalError("Unknown action type: \(actionType)")
             }
@@ -95,6 +99,14 @@ struct ShareAction: Action {
 
 struct PlayMovieAction : Action {
     let url:URL
+    var presentNewScreen: Bool {
+        return true
+    }
+}
+
+struct QuickLookAction : Action {
+    let url:URL?
+    let name:String?
     
     var presentNewScreen: Bool {
         return true
@@ -103,10 +115,10 @@ struct PlayMovieAction : Action {
 
 class NavigationManager {
     private var screens = [String: Screen]()
+    
     func fetch(completion: (Screen) -> Void){
-        let url = URL(string: "https://s3.amazonaws.com/bucket-suspirio/index.json")
+        let url = URL(string: "http://0.0.0.0:6969/index.json")
         let data = try! Data(contentsOf: url!)
-        print(data)
         let decoder = JSONDecoder()
         let app = try! decoder.decode(Application.self, from: data)
         for screen in app.screens {
@@ -117,6 +129,7 @@ class NavigationManager {
     
     func execute(_ action: Action?, from viewController: UIViewController){
         guard let action = action else { return }
+        
         if let action = action as? AlertAction {
             let ac = UIAlertController(title: action.title, message: action.message, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK",style: .default))
@@ -146,6 +159,26 @@ class NavigationManager {
                 let ac = UIActivityViewController(activityItems: items, applicationActivities: nil)
                 viewController.present(ac, animated: true)
             }
+        } else if let action = action as? QuickLookAction {
+            prepareQuickLookSegue(action.url!,action.name!,viewController)
         }
     }
+    
+    func prepareQuickLookSegue(_ url: URL,_ name: String,_ viewController: UIViewController) {
+        SVProgressHUD.show()
+        let destination: DownloadRequest.DownloadFileDestination = { _, _ in
+            var documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            documentsURL.appendPathComponent(url.lastPathComponent)
+            return (documentsURL, [.removePreviousFile])
+        }
+        
+        Alamofire.download(url, to: destination).responseData { response in
+            if let destinationUrl = response.destinationURL {
+                SVProgressHUD.dismiss()
+                let vc = QuickLookViewController(url: destinationUrl, name: name)
+                viewController.navigationController?.pushViewController(vc, animated: true)
+            }
+        }
+    }
+    
 }

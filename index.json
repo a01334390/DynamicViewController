@@ -21,7 +21,12 @@
 					}
                                 },
 				{
-                                        "title": "Third row"
+                                        "title": "Third row",
+					"actionType": "quickLook",
+					"action": {
+						"url":"https://emtstatic.com/2019/03/Captura-de-pantalla-2019-03-12-a-las-12.52.17.png",
+						"name": "Rocks"
+					}
                                 },
 				{
                                         "title": "Fourth row",
@@ -30,7 +35,7 @@
 						"id":"second"
 					}
                                 },
-				{
+					{
                                         "title": "Share stuff",
 					"actionType":"share",
 					"action" : {

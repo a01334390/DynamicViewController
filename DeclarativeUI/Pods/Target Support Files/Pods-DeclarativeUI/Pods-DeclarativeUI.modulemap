@@ -1,0 +1,6 @@
+framework module Pods_DeclarativeUI {
+  umbrella header "Pods-DeclarativeUI-umbrella.h"
+
+  export *
+  module * { export * }
+}
