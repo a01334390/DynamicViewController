@@ -23,43 +23,63 @@ struct Screen : Decodable {
     let title:String
     let type:String
     let rows: [Row]
+    let rightButton: Button?
 }
 
-struct Row : Decodable {
-    enum ActionCodingKeys: String, CodingKey {
-        case title
-        case actionType
-        case action
-    }
+protocol HasAction {}
 
+enum ActionCodingKeys: String, CodingKey {
+    case title
+    case actionType
+    case action
+}
+
+extension HasAction {
+    func decodeAction(from container: KeyedDecodingContainer<ActionCodingKeys>) throws -> Action? {
+        if let actionType = try container.decodeIfPresent(String.self,forKey: .actionType) {
+            switch actionType {
+            case "alert" :
+                return try container.decode(AlertAction.self, forKey: .action)
+            case "showWebsite":
+                return try container.decode(ShowWebsiteAction.self, forKey: .action)
+            case "showScreen":
+                return try container.decode(ShowScreenAction.self, forKey: .action)
+            case "share":
+                return try container.decode(ShareAction.self, forKey: .action)
+            case "playMovie":
+                return try container.decode(PlayMovieAction.self, forKey: .action)
+            case "quickLook":
+                return try container.decode(QuickLookAction.self, forKey: .action)
+            case "phoneCall":
+                return try container.decode(PhoneCallAction.self, forKey: .action)
+            default:
+                fatalError("Unknown action type: \(actionType)")
+            }
+        } else {
+            return nil
+        }
+    }
+}
+
+struct Row : Decodable, HasAction {
     let title: String
-    let action: Action?
+    var action: Action? = nil
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: ActionCodingKeys.self)
         title = try container.decode(String.self, forKey: .title)
-        if let actionType = try container.decodeIfPresent(String.self,forKey: .actionType) {
-            switch actionType {
-                case "alert" :
-                    action = try container.decode(AlertAction.self, forKey: .action)
-                case "showWebsite":
-                    action = try container.decode(ShowWebsiteAction.self, forKey: .action)
-                case "showScreen":
-                    action = try container.decode(ShowScreenAction.self, forKey: .action)
-                case "share":
-                    action = try container.decode(ShareAction.self, forKey: .action)
-                case "playMovie":
-                    action = try container.decode(PlayMovieAction.self, forKey: .action)
-                case "quickLook":
-                    action = try container.decode(QuickLookAction.self, forKey: .action)
-                case "phoneCall":
-                    action = try container.decode(PhoneCallAction.self, forKey: .action)
-                default:
-                    fatalError("Unknown action type: \(actionType)")
-            }
-        } else {
-            action = nil
-        }
+        action = try decodeAction(from: container)
+    }
+}
+
+struct Button: Decodable, HasAction {
+    var title: String
+    var action: Action? = nil
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: ActionCodingKeys.self)
+        title = try container.decode(String.self, forKey: .title)
+        action = try decodeAction(from: container)
     }
 }
 

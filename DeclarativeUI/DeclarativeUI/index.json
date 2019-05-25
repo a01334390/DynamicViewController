@@ -4,6 +4,14 @@
 			"id":"home",
 			"title":"Home",
 			"type":"table",
+            "rightButton":{
+                "title":"Obtener lista",
+                "actionType" : "alert",
+                "action":{
+                    "title":"NFC READER",
+                    "message":"beep boop"
+                }
+            },
 			"rows":[
 				{
 					"title": "First row",

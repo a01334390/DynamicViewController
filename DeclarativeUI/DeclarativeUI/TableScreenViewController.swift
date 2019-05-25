@@ -26,6 +26,14 @@ class TableScreenViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = screen.title
+        if let button = screen.rightButton {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: button.title, style: .plain, target: self, action: #selector(rightBarButtonTapped))
+        }
+    }
+    
+    @objc func rightBarButtonTapped() {
+        guard let button = screen.rightButton else { return }
+        navigationManager?.execute(button.action, from: self)
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
