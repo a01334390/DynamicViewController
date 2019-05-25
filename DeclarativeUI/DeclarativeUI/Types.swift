@@ -114,12 +114,18 @@ struct QuickLookAction : Action {
     }
 }
 
-class NavigationManager {
+class NavigationManager: NSObject, QLPreviewControllerDataSource,  QLPreviewControllerDelegate {
+    
     private var screens = [String: Screen]()
     private var materials:Data?
+    private let quickLookController = QLPreviewController()
+    private var fileURL: NSURL?
     
     init(classMaterials: Data){
+        super.init()
         materials = classMaterials
+        quickLookController.dataSource = self
+        quickLookController.delegate = self
     }
     
     func fetch(completion: (Screen) -> Void){
@@ -164,25 +170,31 @@ class NavigationManager {
                 viewController.present(ac, animated: true)
             }
         } else if let action = action as? QuickLookAction {
-            prepareQuickLookSegue(action.url!,action.name!,viewController)
+            SVProgressHUD.show()
+            let destination: DownloadRequest.DownloadFileDestination = { _, _ in
+                var documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                documentsURL.appendPathComponent(action.url!.lastPathComponent)
+                return (documentsURL, [.removePreviousFile])
+            }
+            
+            Alamofire.download(action.url!, to: destination).responseData { response in
+                if let destinationUrl = response.destinationURL {
+                    SVProgressHUD.dismiss()
+                    self.fileURL = destinationUrl as NSURL
+                    viewController.navigationController?.pushViewController(self.quickLookController, animated: true)
+//                    let vc = QuickLookViewController(url: destinationUrl, name: name)
+//                    viewController.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
         }
     }
     
-    func prepareQuickLookSegue(_ url: URL,_ name: String,_ viewController: UIViewController) {
-        SVProgressHUD.show()
-        let destination: DownloadRequest.DownloadFileDestination = { _, _ in
-            var documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            documentsURL.appendPathComponent(url.lastPathComponent)
-            return (documentsURL, [.removePreviousFile])
-        }
-        
-        Alamofire.download(url, to: destination).responseData { response in
-            if let destinationUrl = response.destinationURL {
-                SVProgressHUD.dismiss()
-                let vc = QuickLookViewController(url: destinationUrl, name: name)
-                viewController.navigationController?.pushViewController(vc, animated: true)
-            }
-        }
+    func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
+        return 1
+    }
+    
+    func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
+        return fileURL!
     }
     
 }
