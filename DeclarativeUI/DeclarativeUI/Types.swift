@@ -11,6 +11,8 @@ import AVKit
 import Alamofire
 import SVProgressHUD
 import QuickLook
+import MessageUI
+import CoreNFC
 
 struct Application : Decodable {
     let screens: [Screen]
@@ -123,18 +125,21 @@ struct PhoneCallAction : Action {
     }
 }
 
-class NavigationManager: NSObject, QLPreviewControllerDataSource,  QLPreviewControllerDelegate {
-    
+class NavigationManager: NSObject, QLPreviewControllerDataSource,  QLPreviewControllerDelegate, NFCNDEFReaderSessionDelegate {
+
     private var screens = [String: Screen]()
     private var materials:Data?
     private let quickLookController = QLPreviewController()
     private var fileURL: NSURL?
+    private var session: NFCNDEFReaderSession?
     
     init(classMaterials: Data){
         super.init()
         materials = classMaterials
         quickLookController.dataSource = self
         quickLookController.delegate = self
+        session = NFCNDEFReaderSession(delegate: self as NFCNDEFReaderSessionDelegate, queue: DispatchQueue.main, invalidateAfterFirstRead: false)
+        session?.begin()
     }
     
     func fetch(completion: (Screen) -> Void){
@@ -209,6 +214,20 @@ class NavigationManager: NSObject, QLPreviewControllerDataSource,  QLPreviewCont
     
     func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
         return fileURL!
+    }
+    
+    func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: Error) {
+        print(error.localizedDescription)
+    }
+    
+    func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
+        for message in messages {
+            for record in message.records {
+                if let string = String(data: record.payload, encoding: .ascii) {
+                    print(string)
+                }
+            }
+        }
     }
     
 }
