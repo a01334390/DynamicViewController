@@ -13,6 +13,13 @@
 						"message":"Oh yeah"
 					}
 				},
+                {
+                    "title": "Phone Call",
+                    "actionType" : "phoneCall",
+                    "action":{
+                        "phone":"+525545228963"
+                    }
+                },
 				{
                                         "title": "Website test",
 					"actionType": "showWebsite",

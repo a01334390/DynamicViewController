@@ -4,7 +4,6 @@
 //
 //  Created by Fernando Martin Garcia Del Angel on 5/2/19.
 //  Copyright © 2019 Fernando Martin Garcia Del Angel. All rights reserved.
-//  https://www.youtube.com/watch?v=Fmu6DlKfRhc
 
 import Foundation
 import SafariServices
@@ -51,6 +50,8 @@ struct Row : Decodable {
                     action = try container.decode(PlayMovieAction.self, forKey: .action)
                 case "quickLook":
                     action = try container.decode(QuickLookAction.self, forKey: .action)
+                case "phoneCall":
+                    action = try container.decode(PhoneCallAction.self, forKey: .action)
                 default:
                     fatalError("Unknown action type: \(actionType)")
             }
@@ -111,6 +112,14 @@ struct QuickLookAction : Action {
     
     var presentNewScreen: Bool {
         return true
+    }
+}
+
+struct PhoneCallAction : Action {
+    let phone:String?
+    
+    var presentNewScreen: Bool {
+        return false
     }
 }
 
@@ -182,8 +191,13 @@ class NavigationManager: NSObject, QLPreviewControllerDataSource,  QLPreviewCont
                     SVProgressHUD.dismiss()
                     self.fileURL = destinationUrl as NSURL
                     viewController.navigationController?.pushViewController(self.quickLookController, animated: true)
-//                    let vc = QuickLookViewController(url: destinationUrl, name: name)
-//                    viewController.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+        } else if let action = action as? PhoneCallAction {
+            if let phoneCallURL = URL(string: "tel://\(action.phone ?? "")") {
+                let application:UIApplication = UIApplication.shared
+                if (application.canOpenURL(phoneCallURL)) {
+                    application.open(phoneCallURL, options: [:], completionHandler: nil)
                 }
             }
         }
