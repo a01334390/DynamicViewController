@@ -9,7 +9,6 @@
 import UIKit
 import SafariServices
 
-
 class TableScreenViewController: UITableViewController {
     var screen : Screen
     var navigationManager : NavigationManager?

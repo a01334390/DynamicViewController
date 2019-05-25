@@ -1,0 +1,93 @@
+{
+	"screens":[
+		{
+			"id":"home",
+			"title":"Home",
+			"type":"table",
+			"rows":[
+				{
+					"title": "First row",
+					"actionType" : "alert",
+					"action":{
+						"title":"This is the first row",
+						"message":"Oh yeah"
+					}
+				},
+				{
+                                        "title": "Website test",
+					"actionType": "showWebsite",
+					"action": {
+						"url":"http://www.github.com/a01334390"	
+					}
+                                },
+				{
+                                        "title": "Third row",
+					"actionType": "quickLook",
+					"action": {
+						"url":"https://emtstatic.com/2019/03/Captura-de-pantalla-2019-03-12-a-las-12.52.17.png",
+						"name": "Rocks"
+					}
+                                },
+				{
+                                        "title": "Fourth row",
+					"actionType":"showScreen",
+					"action" : {
+						"id":"second"
+					}
+                                },
+					{
+                                        "title": "Share stuff",
+					"actionType":"share",
+					"action" : {
+						"text":"Hello!"
+					}
+                                },
+				{
+                                        "title": "Play Movie",
+					"actionType":"playMovie",
+					"action" : {
+						"url":"https://www.youtube.com/watch?v=qgzC4wYn_3g"
+					}
+                                }	
+			]
+		},
+		{
+			"id":"second",
+			"title":"Second Screen",
+			"type":"table",
+			"rows":[
+				{
+					"title": "SFirst row",
+					"actionType" : "alert",
+					"action":{
+						"title":"This is the first row",
+						"message":"Oh yeah"
+					}
+				},
+				{
+                                        "title": "SWebsite test",
+					"actionType": "showWebsite",
+					"action": {
+						"url":"http://www.github.com/a01334390"	
+					}
+                                },
+				{
+                                        "title": "SThird row",
+					"actionType": "quickLook",
+					"action": {
+						"url":"https://developer.apple.com/arkit/gallery/models/wateringcan/wateringcan.usdz",
+						"name" : "Watering Can"
+					}
+                                },
+				{
+					"title":"Word file",
+					"actionType": "quickLook",
+					"action":{
+						"url":"http://0.0.0.0:6969/word.docx",
+						"name":"Word file"
+					}	
+				}	
+			]
+		}
+	]
+}

@@ -116,12 +116,15 @@ struct QuickLookAction : Action {
 
 class NavigationManager {
     private var screens = [String: Screen]()
+    private var materials:Data?
+    
+    init(classMaterials: Data){
+        materials = classMaterials
+    }
     
     func fetch(completion: (Screen) -> Void){
-        let url = URL(string: "http://0.0.0.0:6969/index.json")
-        let data = try! Data(contentsOf: url!)
         let decoder = JSONDecoder()
-        let app = try! decoder.decode(Application.self, from: data)
+        let app = try! decoder.decode(Application.self, from: materials!)
         for screen in app.screens {
             screens[screen.id] = screen
         }
